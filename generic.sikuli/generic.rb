@@ -5,9 +5,20 @@
 # https://github.com/GielRaijmakers/FTAS
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
 
-####################################################################
-##Use stored script
-####################################################################
+
+###############################################
+# when a script needs to be executed
+###############################################
+def RunTestScript(path)      
+   popup path 
+    #read file
+    fileObj = File.new(path, "r")
+    while (line = fileObj.gets)
+      HandleTestScriptFile(line)
+    end
+    fileObj.close
+
+end
 def HandleTestScriptFile(fileline)
    #split function name from arguments
    sArray = fileline.split("(")   
@@ -175,3 +186,4 @@ def WriteToLog(teststep,pass, e="false")
       file.close unless file == nil
     end
 end
+
