@@ -18,7 +18,10 @@
 #       WriteToLog("ExampleDef",passed)  
 #    end
 #end
-
+#example of script line
+# ExampleDef("birthdate:22-6-1979;search:<click>;")
+#here the function ExampleDef is called, object "birthdate" is filled with the date, and object "seach" is clicked.
+#the arguments are being handled by the generic function "HandleTestStep".
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
 
 
