@@ -5,6 +5,9 @@
 # https://github.com/GielRaijmakers/FTAS
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
 
+#add path to the project
+addImagePath('../repository.sikuli')
+addImagePath('../aut.sikuli')
 
 ###############################################
 # when a script needs to be executed
