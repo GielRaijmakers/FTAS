@@ -172,6 +172,7 @@ def WriteToLog(teststep,pass, e="false")
     require 'date'
    begin
       current = DateTime.now  
+        #this should be in a configuration file... 
       file = File.open("D:\\sikuli scripts\\genericfunctions.sikuli\\log.txt", "a")
       if pass == true then
         #passed
