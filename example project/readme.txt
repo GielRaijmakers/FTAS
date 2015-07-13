@@ -8,3 +8,4 @@ Please change the paths where needed. (the logging and the run calculator).
 Cheers, and have fun with it.
 
 Giel
+p.s. add the "StartCalculator" actionword your self to the Excelsheet as an assignment. ;-)
