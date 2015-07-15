@@ -13,14 +13,17 @@ addImagePath('../aut.sikuli')
 # when a script needs to be executed
 ###############################################
 def RunTestScript(path)      
-   popup path 
-    #read file
-    fileObj = File.new(path, "r")
+   begin
+       #read file
+       fileObj = File.new(path, "r")
     while (line = fileObj.gets)
-      HandleTestScriptFile(line)
+       HandleTestScriptFile(line)
     end
-    fileObj.close
-
+    rescue
+       ErrorHandler("error","ScreenShot")
+    ensure
+       fileObj.close
+   end 
 end
 def HandleTestScriptFile(fileline)
    #split function name from arguments
@@ -168,26 +171,32 @@ end
 # write to log
 ##########################################
 def WriteToLog(teststep,pass, e="false")
+    #e (error) is optional
     #http://stackoverflow.com/questions/2777802/how-to-write-to-file-in-ruby    
     require 'date'
    begin
       current = DateTime.now  
-        #this should be in a configuration file... 
       file = File.open("D:\\sikuli scripts\\genericfunctions.sikuli\\log.txt", "a")
-      if pass == true then
-        #passed
-          file.write( current.to_s + " " + teststep.to_s + " " + "passed" +  "\n") 
-      else
-        ScreenShot(teststep.to_s)
-        file.write( "\n") 
-        file.write( current.to_s + " " + teststep.to_s + " " + "FAILED" +  "\n") 
-        file.write( e.to_s +  "\n") 
-        file.write ("look at: " + teststep.to_s + ".png\n")
-      end  
+     case pass
+        when true
+            #passed
+            file.write( current.to_s + " " + teststep.to_s + " " + "passed" +  "\n") 
+        when false
+            ScreenShot(teststep.to_s)
+            file.write( "\n") 
+            file.write( current.to_s + " " + teststep.to_s + " " + "FAILED" +  "\n") 
+            file.write( e.to_s +  "\n") 
+            file.write ("look at: " + teststep.to_s + ".png\n")        
+        when "warning"    
+            ScreenShot(teststep.to_s)
+            file.write( "\n") 
+            file.write( current.to_s + " " + teststep.to_s + " " + "Warning" +  "\n") 
+            file.write ("look at: " + teststep.to_s + ".png\n") 
+    end     
+ 
     rescue IOError => e
       #some error occur, dir not writable etc.
     ensure
       file.close unless file == nil
     end
 end
-
