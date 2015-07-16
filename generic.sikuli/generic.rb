@@ -6,8 +6,8 @@
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
 
 #add path to the project
-addImagePath('../repository.sikuli')
-addImagePath('../aut.sikuli')
+ImagePath.setBundlePath( File.dirname(__FILE__) +"/aut.sikuli")
+ImagePath.setBundlePath( File.dirname(__FILE__) +"/repository.sikuli");
 
 ###############################################
 # when a script needs to be executed
