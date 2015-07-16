@@ -6,7 +6,6 @@
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
 
 #add path to the project
-#ImagePath.add '../repository.sikuli'
 #addImagePath('../repository.sikuli')
 #addImagePath('../aut.sikuli')
 
