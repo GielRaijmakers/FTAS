@@ -253,8 +253,9 @@ def SwitchCalculatorType(kind)
             when "programmer"
                  keyDown(Key.ALT + "3")
             when "statistic"
-                 keyDown(Key.ALT + "4")
+                 keyDown(Key.ALT + "4")				 
         end
+		passed = true
     rescue
         ErrorHandler("error", "SwitchCalculatorType")         
         passed = false
