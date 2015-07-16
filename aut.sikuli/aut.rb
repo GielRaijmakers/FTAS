@@ -28,3 +28,5 @@
 #add path to the project
 ImagePath.setBundlePath( File.dirname(__FILE__) +"/repository.sikuli")
 ImagePath.setBundlePath( File.dirname(__FILE__) +"/generic.sikuli");
+require File.dirname(__FILE__) + "/generic.sikuli/generic.rb'"
+require File.dirname(__FILE__) + "/repository.sikuli/repository.rb'"

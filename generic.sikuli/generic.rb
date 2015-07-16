@@ -8,7 +8,8 @@
 #add path to the project
 ImagePath.setBundlePath( File.dirname(__FILE__) +"/aut.sikuli")
 ImagePath.setBundlePath( File.dirname(__FILE__) +"/repository.sikuli");
-
+require File.dirname(__FILE__) + "/generic.sikuli/aut.rb'"
+require File.dirname(__FILE__) + "/repository.sikuli/repository.rb'"
 ###############################################
 # when a script needs to be executed
 ###############################################
