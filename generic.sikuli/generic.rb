@@ -160,7 +160,7 @@ def ScreenShot(functionname)
         rect = Rectangle.new(screen_size)
         robot = Robot.new
         image = robot.createScreenCapture(rect)
-        path =  File.dirname(__FILE__)
+        path =  ConfigFile.screenshotpath #File.dirname(__FILE__)
         f = java::io::File.new(path.to_s + "\\" + functionname + '.png')
         ImageIO::write(image, "png", f)       
     rescue
@@ -177,7 +177,7 @@ def WriteToLog(teststep,pass, e="false")
     require 'date'
    begin
       current = DateTime.now  
-      file = File.open("D:\\sikuli scripts\\genericfunctions.sikuli\\log.txt", "a")
+      file = File.open(ConfigFile.logpath, "a")
      case pass
         when true
             #passed
