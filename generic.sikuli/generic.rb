@@ -252,7 +252,7 @@ module ConfigRead
            fileObj = File.new(path, "r")
         while (line = fileObj.gets)
            #read first word, this is the parameter
-               configline= line.split(":=") 
+               configline= line.chomp.split(":=")
             case  configline[0].to_s
                 when 'LOGPATH'                   
                     ConfigFile.logpathset configline[1].to_s
