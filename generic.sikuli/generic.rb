@@ -201,3 +201,74 @@ def WriteToLog(teststep,pass, e="false")
       file.close unless file == nil
     end
 end
+
+
+######################################################
+# Configuration file read and store variables
+######################################################
+module ConfigFile
+    @@LOGPATH = 'empty'
+    @@SCREENSHOTPATH = 'empty'
+    @@IGNOREPOPUPS = 'empty'
+    @@AUTPATH = 'empty'
+
+    def self.logpathset(x) 
+        @@LOGPATH = x
+    end
+
+    def self.schreenshotpathset(x)
+        @@SCREENSHOTPATH = x
+    end
+    def self.ignorepopupsset(x)
+        @@IGNOREPOPUPS = x
+    end
+    def self.autpathset(x)
+        @@AUTPATH = x
+    end
+   
+    def self.logpath
+       @@LOGPATH 
+    end
+
+    def self.screenshotpath
+       @@SCREENSHOTPATH
+    end
+
+    def self.ignorepopups
+       @@IGNOREPOPUPS 
+    end
+     
+    def self.autpath
+       @@autpath 
+    end
+
+end
+
+
+module ConfigRead   
+    def self.ReadConfigFile(path)      
+       begin
+           #read file
+           fileObj = File.new(path, "r")
+        while (line = fileObj.gets)
+           #read first word, this is the parameter
+               configline= line.split(":=") 
+            case  configline[0].to_s
+                when 'LOGPATH'                   
+                    ConfigFile.logpathset configline[1].to_s
+                when 'SCREENSHOTPATH'
+                    ConfigFile.schreenshotpathset configline[1].to_s
+                when 'IGNOREPOPUPS'
+                    ConfigFile.ignorepopupsset configline[1].to_s
+                when 'AUTPATH'
+                    ConfigFile.autpathset configline[1].to_s
+            end
+        end
+        rescue
+           ErrorHandler("error","ReadConfigFile")
+          popup e.description
+        ensure
+           fileObj.close
+       end 
+    end
+end
