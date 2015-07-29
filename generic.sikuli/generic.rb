@@ -273,6 +273,10 @@ module ConfigRead
     end
 end
 
+#####################################################
+#Execute at a certain time. 
+# ExecuteAtTime('08:40')
+#####################################################
 def ExecuteAtTime(time)
     require 'time'
     t = Time.parse(time) 
