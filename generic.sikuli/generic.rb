@@ -272,3 +272,12 @@ module ConfigRead
        end 
     end
 end
+
+def ExecuteAtTime(time)
+    require 'time'
+    t = Time.parse(time) 
+  
+    while t>Time.now
+        #wait    
+    end        
+end
