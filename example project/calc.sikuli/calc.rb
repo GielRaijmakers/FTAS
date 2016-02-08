@@ -12,16 +12,23 @@
 ###############################################
 # when a script needs to be executed
 ###############################################
+puts "XXXXXX 3"
+require 'C:\jruby-9.0.0.0\lib\ruby\gems\shared\gems\sikulix-1.1.0.3\lib\sikulix.rb'
+puts "XXXXXX 4"
+include Sikulix
+ImagePath.add('D:\tests\Github\FTAS\FTAS\example project\calc.sikuli')
+Settings.setShowActions(false)
+
 def RunTestScript(path)      
-   popup path 
+  # popup path 
     #read file
     fileObj = File.new(path, "r")
     while (line = fileObj.gets)
       HandleTestScriptFile(line)
     end
     fileObj.close
-
 end
+
 def HandleTestScriptFile(fileline)
    #split function name from arguments
    sArray = fileline.split("(")   
@@ -64,7 +71,7 @@ def HandelActionToObject(action,object)
        if action.include?("<") then
             #other
             case action
-                when "<click>"   
+                when "<click>"                     
                     wait(object.to_s + ".png")             
                     click(object.to_s + ".png")
                 when "<check>"
@@ -108,13 +115,14 @@ def HandelTestStep(list)
            if sArray[i].include?(":") then 
                 sArray2 = sArray[i].split(":")
                # 1 is the action, 0 is the object it self.
+              # popup sArray2[1].to_s + " " + sArray2[0].to_s  
                HandelActionToObject(sArray2[1],sArray2[0])
             end
             i=i+1 
         end
         passed = true
-    rescue
-        ErrorHandler("error","HandelTestStep")
+    rescue => err
+        ErrorHandler(err,"HandelTestStep")
         passed = false
    ensure 
         WriteToLog(list,passed) 
@@ -128,7 +136,7 @@ end
 def ErrorHandler(err, functionName)
     # http://marxsoftware.blogspot.nl/2009/05/jrubys-ruby-style-exception-handling.html    
     popup err.to_s
-    popup("in errorhandler, source:" + functionName )   
+    popup("in errorhandler, source:" + functionName)   
     exit
 end
 
@@ -156,7 +164,8 @@ def ScreenShot(functionname)
         rect = Rectangle.new(screen_size)
         robot = Robot.new
         image = robot.createScreenCapture(rect)
-        path =  File.dirname(__FILE__)
+        path =  File.dirname(__FILE__)   
+        popup functionname.to_s
         f = java::io::File.new(path.to_s + "\\" + functionname + '.png')
         ImageIO::write(image, "png", f)       
     rescue
@@ -173,7 +182,7 @@ def WriteToLog(teststep,pass, e="false")
    begin
       current = DateTime.now  
         #this should be in a configuration file... 
-      file = File.open("C:\\sikuliscripts\\calc.sikuli\\log.txt", "a")
+      file = File.open('D:\tests\Github\FTAS\FTAS\example project\calc.sikuli\log.txt', "a")
       if pass == true then
         #passed
           file.write( current.to_s + " " + teststep.to_s + " " + "passed" +  "\n") 
@@ -192,28 +201,23 @@ def WriteToLog(teststep,pass, e="false")
 end
 
 def repo
-click("1.png")
-click("2.png")
-click("3.png")
-click("4.png")
-click("5.png")
-click("6.png")
-click("7.png")
-click("8.png")
-click("9.png")
-click("0.png")
+  click("1.png")
+  click("2.png")
+  click("3.png")
+  click("4.png")
+  click("5.png")
+  click("6.png")
+  click("7.png")
+  click("8.png")
+  click("9.png")
+  click("0.png")
 
-click("plus.png")
-click("1436507994441.png")
-click("1436508008496.png")
-click("1436508023794.png")
-click("1436508033116.png")
-click("is.png")
-
-
-
-
-
+  click("plus.png")
+  click("1436507994441.png")
+  click("1436508008496.png")
+  click("1436508023794.png")
+  click("1436508033116.png")
+  click("is.png")
 end
 
 
@@ -222,7 +226,7 @@ def Numbers(list)
     begin       
       HandelTestStep(list)
       passed = true
-    rescue
+    rescue 
         ErrorHandler("error", "Numbers")         
         passed = false
     ensure 
@@ -271,10 +275,12 @@ def StartCalculator()
 end
 
 
-
+puts "XXXXXX 1"
 StartCalculator()
-Numbers('1:<click>;2:<click>;')
-MathExpressions('plus:<click>;')
-Numbers('1:<click>;2:<click>;')
-MathExpressions('is:<click>;')
-SwitchCalculatorType("scientific")
+#Numbers('1:<click>;2:<click>;')
+puts "XXXXXXX 2"
+Numbers('1:<click>;')
+#MathExpressions('plus:<click>;')
+#Numbers('1:<click>;2:<click>;')
+#MathExpressions('is:<click>;')
+#SwitchCalculatorType("scientific")
