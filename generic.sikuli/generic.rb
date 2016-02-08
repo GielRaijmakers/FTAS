@@ -13,20 +13,24 @@ require File.dirname(__FILE__) + "/repository.sikuli/repository.rb'"
 ###############################################
 # when a script needs to be executed
 ###############################################
-def RunTestScript(path)      
-   begin
-       #read file
-       fileObj = File.new(path, "r")
+def ReadScriptBaseFile(path)
+   fileObj = File.new(path, "r")
     while (line = fileObj.gets)
-       HandleTestScriptFile(line)
+      if line.include? ":="
+        popup "config"
+        ConfigRead.ProcessConfigLine(line)
+      else
+        popup "HandleTestScript"
+        HandleTestScriptFileLine(line)
+      end
     end
     rescue
-       ErrorHandler("error","ScreenShot")
+       ErrorHandler("error","ReadScriptBaseFile")
     ensure
        fileObj.close
    end 
-end
-def HandleTestScriptFile(fileline)
+
+def HandleTestScriptFileLine(fileline)
    #split function name from arguments
    sArray = fileline.split("(")   
    #strip all " and ()
@@ -34,7 +38,9 @@ def HandleTestScriptFile(fileline)
     
     if sArray[1].include? ";"
        #regular function, with actions on objects
-        send(sArray[0], sArray[1])
+        sArray2 = sArray[1].split(":")
+        #remove ; and only send the second part (only     
+        send(sArray[0], sArray2[1].chomp(';'))
     else
         #actions like logon or "menu"
         #check how many arguments there are
@@ -56,7 +62,6 @@ def HandleTestScriptFile(fileline)
          end            
     end
 end
-
 
 ########################################
 #handler action to object (like click)
@@ -220,7 +225,11 @@ module ConfigFile
         @@SCREENSHOTPATH = x
     end
     def self.ignorepopupsset(x)
-        @@IGNOREPOPUPS = x
+      case  x.upcase
+        when 'Y', 'YES', 'JA', 'J'
+          x='Y'        
+      end
+      @@IGNOREPOPUPS = x
     end
     def self.autpathset(x)
         @@AUTPATH = x
