@@ -11,4 +11,3 @@ In the first column (A) all cells are filled with a dropdown with a list of keyw
 When selecting a keywor, the arguments are placed in the row above the keyword.
 
 With a rightclick the cell below a argument can be filled with a predefined value like <click>. 
-

@@ -17,10 +17,8 @@ def ReadScriptBaseFile(path)
    fileObj = File.new(path, "r")
     while (line = fileObj.gets)
       if line.include? ":="
-        popup "config"
         ConfigRead.ProcessConfigLine(line)
       else
-        popup "HandleTestScript"
         HandleTestScriptFileLine(line)
       end
     end
@@ -28,7 +26,7 @@ def ReadScriptBaseFile(path)
        ErrorHandler("error","ReadScriptBaseFile")
     ensure
        fileObj.close
-   end 
+end 
 
 def HandleTestScriptFileLine(fileline)
    #split function name from arguments
