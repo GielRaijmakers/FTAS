@@ -12,23 +12,32 @@
 ###############################################
 # when a script needs to be executed
 ###############################################
+def StripProjectDir(projectPath)
+    puts "in strip dir " + projectPath 
+    path = projectPath.split("/")
+    projectPath.slice! path[path.length-1].to_s
+    return projectPath.to_s
+end
+
+
 puts "path: " + File.dirname(__FILE__) 
-path = File.dirname(__FILE__)
+path = StripProjectDir(File.dirname(__FILE__))
 ImagePath.setBundlePath( path +"/repository.sikuli");
 ImagePath.setBundlePath( path +"/generic.sikuli")
 require path + "/generic.sikuli/generic.rb"
 require path + "/repository.sikuli/repository.rb"
 
 
-require 'C:\jruby-9.0.0.0\lib\ruby\gems\shared\gems\sikulix-1.1.0.3\lib\sikulix.rb'
+#require 'C:\jruby-9.0.0.0\lib\ruby\gems\shared\gems\sikulix-1.1.0.3\lib\sikulix.rb'
 
-include Sikulix
+#include Sikulix
 #ImagePath.add('D:\tests\Github\FTAS\FTAS\example project\calc.sikuli')
 Settings.setShowActions(false)
 
 
 def Numbers(list)
-    begin       
+    begin      
+puts  "in numbers" + list
       HandelTestStep(list)
       passed = true
     rescue 
@@ -80,11 +89,9 @@ def StartCalculator()
 end
 
 
-puts "XXXXXX 1"
-StartCalculator()
+#StartCalculator()
 #Numbers('1:<click>;2:<click>;')
-puts "XXXXXXX 2"
-Numbers('1:<click>;')
+#Numbers('1:<click>;')
 #MathExpressions('plus:<click>;')
 #Numbers('1:<click>;2:<click>;')
 #MathExpressions('is:<click>;')

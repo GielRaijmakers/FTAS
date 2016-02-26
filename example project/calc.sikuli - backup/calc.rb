@@ -6,29 +6,30 @@
 #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#
 
 #add path to the project
-ImagePath.setBundlePath( File.dirname(__FILE__) +"/aut.sikuli")
-ImagePath.setBundlePath( File.dirname(__FILE__) +"/repository.sikuli");
-require File.dirname(__FILE__) + "/generic.sikuli/aut.rb"
-require File.dirname(__FILE__) + "/repository.sikuli/repository.rb"
+#addImagePath('../repository.sikuli')
+#addImagePath('../aut.sikuli')
+
 ###############################################
 # when a script needs to be executed
 ###############################################
-def ReadScriptBaseFile(path)
-   fileObj = File.new(path, "r")
-    while (line = fileObj.gets)
-      if line.include? ":="
-        ConfigRead.ProcessConfigLine(line)
-      else
-        HandleTestScriptFileLine(line)
-      end
-    end
-    rescue
-       ErrorHandler("error","ReadScriptBaseFile")
-    ensure
-       fileObj.close
-end 
+puts "XXXXXX 3"
+require 'C:\jruby-9.0.0.0\lib\ruby\gems\shared\gems\sikulix-1.1.0.3\lib\sikulix.rb'
+puts "XXXXXX 4"
+include Sikulix
+ImagePath.add('D:\tests\Github\FTAS\FTAS\example project\calc.sikuli')
+Settings.setShowActions(false)
 
-def HandleTestScriptFileLine(fileline)
+def RunTestScript(path)      
+  # popup path 
+    #read file
+    fileObj = File.new(path, "r")
+    while (line = fileObj.gets)
+      HandleTestScriptFile(line)
+    end
+    fileObj.close
+end
+
+def HandleTestScriptFile(fileline)
    #split function name from arguments
    sArray = fileline.split("(")   
    #strip all " and ()
@@ -36,9 +37,7 @@ def HandleTestScriptFileLine(fileline)
     
     if sArray[1].include? ";"
        #regular function, with actions on objects
-        sArray2 = sArray[1].split(":")
-        #remove ; and only send the second part (only     
-        send(sArray[0], sArray2[1].chomp(';'))
+        send(sArray[0], sArray[1])
     else
         #actions like logon or "menu"
         #check how many arguments there are
@@ -61,6 +60,7 @@ def HandleTestScriptFileLine(fileline)
     end
 end
 
+
 ########################################
 #handler action to object (like click)
 ########################################
@@ -71,7 +71,7 @@ def HandelActionToObject(action,object)
        if action.include?("<") then
             #other
             case action
-                when "<click>"   
+                when "<click>"                     
                     wait(object.to_s + ".png")             
                     click(object.to_s + ".png")
                 when "<check>"
@@ -115,13 +115,14 @@ def HandelTestStep(list)
            if sArray[i].include?(":") then 
                 sArray2 = sArray[i].split(":")
                # 1 is the action, 0 is the object it self.
+              # popup sArray2[1].to_s + " " + sArray2[0].to_s  
                HandelActionToObject(sArray2[1],sArray2[0])
             end
             i=i+1 
         end
         passed = true
-    rescue
-        ErrorHandler("error","HandelTestStep")
+    rescue => err
+        ErrorHandler(err,"HandelTestStep")
         passed = false
    ensure 
         WriteToLog(list,passed) 
@@ -135,7 +136,7 @@ end
 def ErrorHandler(err, functionName)
     # http://marxsoftware.blogspot.nl/2009/05/jrubys-ruby-style-exception-handling.html    
     popup err.to_s
-    popup("in errorhandler, source:" + functionName )   
+    popup("in errorhandler, source:" + functionName)   
     exit
 end
 
@@ -163,7 +164,8 @@ def ScreenShot(functionname)
         rect = Rectangle.new(screen_size)
         robot = Robot.new
         image = robot.createScreenCapture(rect)
-        path =  ConfigFile.screenshotpath #File.dirname(__FILE__)
+        path =  File.dirname(__FILE__)   
+        popup functionname.to_s
         f = java::io::File.new(path.to_s + "\\" + functionname + '.png')
         ImageIO::write(image, "png", f)       
     rescue
@@ -175,29 +177,22 @@ end
 # write to log
 ##########################################
 def WriteToLog(teststep,pass, e="false")
-    #e (error) is optional
     #http://stackoverflow.com/questions/2777802/how-to-write-to-file-in-ruby    
     require 'date'
    begin
       current = DateTime.now  
-      file = File.open(ConfigFile.logpath, "a")
-     case pass
-        when true
-            #passed
-            file.write( current.to_s + " " + teststep.to_s + " " + "passed" +  "\n") 
-        when false
-            ScreenShot(teststep.to_s)
-            file.write( "\n") 
-            file.write( current.to_s + " " + teststep.to_s + " " + "FAILED" +  "\n") 
-            file.write( e.to_s +  "\n") 
-            file.write ("look at: " + teststep.to_s + ".png\n")        
-        when "warning"    
-            ScreenShot(teststep.to_s)
-            file.write( "\n") 
-            file.write( current.to_s + " " + teststep.to_s + " " + "Warning" +  "\n") 
-            file.write ("look at: " + teststep.to_s + ".png\n") 
-    end     
- 
+        #this should be in a configuration file... 
+      file = File.open('D:\tests\Github\FTAS\FTAS\example project\calc.sikuli\log.txt', "a")
+      if pass == true then
+        #passed
+          file.write( current.to_s + " " + teststep.to_s + " " + "passed" +  "\n") 
+      else
+        ScreenShot(teststep.to_s)
+        file.write( "\n") 
+        file.write( current.to_s + " " + teststep.to_s + " " + "FAILED" +  "\n") 
+        file.write( e.to_s +  "\n") 
+        file.write ("look at: " + teststep.to_s + ".png\n")
+      end  
     rescue IOError => e
       #some error occur, dir not writable etc.
     ensure
@@ -205,90 +200,87 @@ def WriteToLog(teststep,pass, e="false")
     end
 end
 
+def repo
+  click("1.png")
+  click("2.png")
+  click("3.png")
+  click("4.png")
+  click("5.png")
+  click("6.png")
+  click("7.png")
+  click("8.png")
+  click("9.png")
+  click("0.png")
 
-######################################################
-# Configuration file read and store variables
-######################################################
-module ConfigFile
-    @@LOGPATH = 'empty'
-    @@SCREENSHOTPATH = 'empty'
-    @@IGNOREPOPUPS = 'empty'
-    @@AUTPATH = 'empty'
+  click("plus.png")
+  click("1436507994441.png")
+  click("1436508008496.png")
+  click("1436508023794.png")
+  click("1436508033116.png")
+  click("is.png")
+end
 
-    def self.logpathset(x) 
-        @@LOGPATH = x
-    end
 
-    def self.schreenshotpathset(x)
-        @@SCREENSHOTPATH = x
-    end
-    def self.ignorepopupsset(x)
-      case  x.upcase
-        when 'Y', 'YES', 'JA', 'J'
-          x='Y'        
-      end
-      @@IGNOREPOPUPS = x
-    end
-    def self.autpathset(x)
-        @@AUTPATH = x
-    end
-   
-    def self.logpath
-       @@LOGPATH 
-    end
 
-    def self.screenshotpath
-       @@SCREENSHOTPATH
+def Numbers(list)
+    begin       
+      HandelTestStep(list)
+      passed = true
+    rescue 
+        ErrorHandler("error", "Numbers")         
+        passed = false
+    ensure 
+       WriteToLog("Numbers",passed)  
     end
+end
 
-    def self.ignorepopups
-       @@IGNOREPOPUPS 
-    end
-     
-    def self.autpath
-       @@autpath 
+def MathExpressions(list)
+    begin       
+      HandelTestStep(list)
+      passed = true
+    rescue
+        ErrorHandler("error", "MathExpressions")         
+        passed = false
+    ensure 
+       WriteToLog("MathExpressions",passed)  
     end
 
 end
 
-
-module ConfigRead   
-    def self.ReadConfigFile(path)      
-       begin
-           #read file
-           fileObj = File.new(path, "r")
-        while (line = fileObj.gets)
-           #read first word, this is the parameter
-               configline= line.chomp.split(":=")
-            case  configline[0].to_s
-                when 'LOGPATH'                   
-                    ConfigFile.logpathset configline[1].to_s
-                when 'SCREENSHOTPATH'
-                    ConfigFile.schreenshotpathset configline[1].to_s
-                when 'IGNOREPOPUPS'
-                    ConfigFile.ignorepopupsset configline[1].to_s
-                when 'AUTPATH'
-                    ConfigFile.autpathset configline[1].to_s
-            end
+def SwitchCalculatorType(kind)
+    begin  
+        case kind
+            when "standard"
+                 keyDown(Key.ALT + "1")
+            when "scientific" 
+                 keyDown(Key.ALT + "2")    
+            when "programmer"
+                 keyDown(Key.ALT + "3")
+            when "statistic"
+                 keyDown(Key.ALT + "4")				 
         end
-        rescue
-           ErrorHandler("error","ReadConfigFile")
-          popup e.description
-        ensure
-           fileObj.close
-       end 
+		passed = true
+    rescue
+        ErrorHandler("error", "SwitchCalculatorType")         
+        passed = false
+    ensure 
+       WriteToLog("SwitchCalculatorType",passed)  
     end
 end
 
-#####################################################
-#Execute at a certain time. 
-# ExecuteAtTime('08:40')
-#####################################################
-def ExecuteAtTime(time)
-    require 'time'
-    t = Time.parse(time) 
-  
-    while t>Time.now
-        #wait    
-    end        
+def StartCalculator()
+   begin 
+    IO.popen 'C:\\windows\system32\\calc.exe'
+    end
 end
+
+
+puts "XXXXXX 1"
+StartCalculator()
+#Numbers('1:<click>;2:<click>;')
+puts "XXXXXXX 2"
+Numbers('1:<click>;')
+#MathExpressions('plus:<click>;')
+#Numbers('1:<click>;2:<click>;')
+#MathExpressions('is:<click>;')
+#SwitchCalculatorType("scientific")
